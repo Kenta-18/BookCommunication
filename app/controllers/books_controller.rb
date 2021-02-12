@@ -1,4 +1,5 @@
 class BooksController < ApplicationController
+  before_action :authenticate_user!, except: [:index]
   def index
     @books = Book.all
   end
@@ -14,18 +15,27 @@ class BooksController < ApplicationController
   def create
     @book = Book.new(book_params)
     @book.user_id = current_user.id
-    @book.save
-    redirect_to book_path(@book)
+    if @book.save
+      redirect_to book_path(@book), notice: '更新しました！'
+    else
+      render :new
+    end
   end
 
   def edit
     @book = Book.find(params[:id])
+    if @book.user != current_user
+      redirect_to books_path, alert: '不正なアクセスです！'
+    end
   end
 
   def update
     @book = Book.find(params[:id])
-    @book.update(book_params)
-    redirect_to book_path(@book)
+    if @book.update(book_params)
+      redirect_to book_path(@book), notice: '更新しました！'
+    else
+      render :edit
+    end
   end
 
   def destroy

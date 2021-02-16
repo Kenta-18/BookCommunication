@@ -84,5 +84,5 @@ test:
 production:
   <<: *default
   database: BookCommunication_production
-  username: BookCommunication
+  username: postgres
   password: <%= ENV['BOOKCOMMUNICATION_DATABASE_PASSWORD'] %>
